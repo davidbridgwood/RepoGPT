@@ -1,4 +1,4 @@
-from langchain.vectorstores import DeepLake
+from langchain_community.vectorstores import DeepLake
 from repogpt.crawler import crawl_and_split, index
 from repogpt.qa.qa import QA
 from repogpt import config_utils
@@ -39,7 +39,7 @@ def main():
     else:
         logger.info("Initializing LLM...")
         llm = config_utils.read_config_llm(args.config_file)
-        vs = DeepLake(dataset_path=vs_path, read_only=True, embedding_function=embeddings)
+        vs = DeepLake(dataset_path=vs_path, read_only=True, embedding=embeddings)
         qa = QA(llm, vs, num_results)
 
         while True:
@@ -54,6 +54,7 @@ def main():
                 print(Fore.GREEN + f"Response:\n{resp}")
             except Exception as e:
                 logger.error(f"Exception occurred computing LLM Response: {e}")
+                raise e
 
 
 if __name__ == "__main__":

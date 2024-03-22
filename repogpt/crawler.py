@@ -1,8 +1,7 @@
 from langchain.docstore.document import Document
-from langchain.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
-from langchain.embeddings.base import Embeddings
-from langchain.vectorstores import DeepLake
+from langchain_community.vectorstores import DeepLake
 from repogpt.parsers.python_parser import PythonParser
 from repogpt.parsers.treesitter import TreeSitterParser
 from repogpt.parsers.cpp_treesitter_parser import CppTreeSitterParser
@@ -163,5 +162,5 @@ def crawl_and_split(root_dir: str, chunk_size: int = 3000, chunk_overlap: int = 
     return split_docs
 
 
-def index(docs: List[Document], embedding_type: Embeddings, vs_path: str):
+def index(docs: List[Document], embedding_type, vs_path: str):
     return DeepLake.from_documents(docs, embedding_type, dataset_path=vs_path)

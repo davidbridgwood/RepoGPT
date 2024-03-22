@@ -1,8 +1,8 @@
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.llms import OpenAI, GPT4All, LlamaCpp
-from langchain.embeddings.base import Embeddings
-from langchain.llms import BaseLLM
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.llms import OpenAI, GPT4All, LlamaCpp
+from langchain_openai import ChatOpenAI
+from langchain_community.llms import BaseLLM
 from typing import Optional
 import configparser
 
@@ -15,7 +15,7 @@ def get_config_option(config, section: str, option: str) -> Optional[str]:
         raise ValueError(f"config file does not contain {section} section and {option} option!")
 
 
-def read_config_embeddings(config_file: str) -> Embeddings:
+def read_config_embeddings(config_file: str):
     """Initialize the embeddings object based on type specified in config file"""
     config = configparser.ConfigParser()
     config.read(config_file)
@@ -53,7 +53,7 @@ def read_config_llm(config_file: str) -> BaseLLM:
 
     if config.has_section("openai-llm"):
         llm_name = get_config_option(config, "openai-llm", "MODEL_NAME")
-        llm = OpenAI(model_name=llm_name)
+        llm = ChatOpenAI(model_name=llm_name)
     elif config.has_section("local-llm"):
         llm_path = get_config_option(config, "local-llm", "MODEL_PATH")
         llm_name = get_config_option(config, "local-llm", "MODEL_NAME")

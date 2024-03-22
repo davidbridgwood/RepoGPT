@@ -1,5 +1,5 @@
-from langchain.vectorstores import DeepLake
-from langchain.llms import BaseLLM
+from langchain_community.vectorstores import DeepLake
+from langchain_community.llms import BaseLLM
 from langchain.docstore.document import Document
 from typing import List
 from colorama import Fore, Back, Style, init
@@ -19,7 +19,7 @@ class QA:
         self.retriever = deeplake_store.as_retriever()
         self.retriever.search_kwargs['distance_metric'] = 'cos'
         self.retriever.search_kwargs["fetch_k"] = 100
-        self.retriever.search_kwargs['maximal_marginal_relevance'] = False
+        # self.retriever.search_kwargs['maximal_marginal_relevance'] = False
         self.num_results = num_results
         self.retriever.search_kwargs['k'] = num_results
 
@@ -49,12 +49,12 @@ class QA:
                            f"question string is {query_str}."
 
         try:
-            resp = self.llm(recursive_prompt)
-        except openai.error.RateLimitError as e:
+            resp = self.llm.invoke(recursive_prompt)
+        except openai.RateLimitError as e:
             print("sleeping for 10 seconds because of rate limit error")
             time.sleep(10)
 
-        resp_dict = json.loads(resp)
+        resp_dict = json.loads(resp.content)
 
         relevant_chunks = []
 
@@ -107,4 +107,4 @@ class QA:
         print("Computing response...")
 
         time.sleep(5)
-        return self.llm(qa_prompt)
+        return self.llm.invoke(qa_prompt)
